@@ -1,6 +1,7 @@
 ﻿using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Controls;
 using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Geometry;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -118,6 +119,7 @@ namespace EX3
                     }
                 }
 
+                comboBox4.Items.Clear();
                 foreach(string value in fieldValues)
                 {
                     comboBox4.Items.Add(value);
@@ -137,6 +139,7 @@ namespace EX3
                     MessageBox.Show("Only 'Like' and '=' is applicable for string type field");
                     return;
                 }
+                query.WhereClause = _selectedField.Name+" " + oper + " " +"'"+comboBox4.SelectedItem.ToString()+"'";
             }
             else 
             {
@@ -145,18 +148,62 @@ namespace EX3
                     MessageBox.Show("can not use like on non String field ");
                     return;
                 }
+                query.WhereClause = _selectedField.Name+" " + oper + " " +comboBox4.Text;
             }
 
             //query.WhereClause = "\""+_selectedField.Name+"\""+" " + oper + " " +"'"+comboBox4.SelectedItem.ToString()+"'";
-            query.WhereClause = _selectedField.Name+" " + oper + " " +"'"+comboBox4.SelectedItem.ToString()+"'";
-            MessageBox.Show(query.WhereClause);
             var cursor =_selectedLayer.FeatureClass.Search(query,false);
             var currentFeature = cursor.NextFeature();
 
             while (currentFeature != null)
             {
                 _mapControl.FlashShape(currentFeature.Shape);
+                currentFeature = cursor.NextFeature();
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+            QueryFilter query = new QueryFilter();
+            String oper = comboBox3.SelectedItem.ToString();
+            if (_selectedFieldType == esriFieldType.esriFieldTypeString)
+            {
+                if (oper != "=" && oper != "LIKE")
+                {
+                    MessageBox.Show("Only 'Like' and '=' is applicable for string type field");
+                    return;
+                }
+                query.WhereClause = _selectedField.Name + " " + oper + " " + "'" + comboBox4.SelectedItem.ToString() + "'";
+            }
+            else
+            {
+                if (oper == "LIKE")
+                {
+                    MessageBox.Show("can not use like on non String field ");
+                    return;
+                }
+                query.WhereClause = _selectedField.Name + " " + oper + " " + comboBox4.Text;
+            }
+
+            //query.WhereClause = "\""+_selectedField.Name+"\""+" " + oper + " " +"'"+comboBox4.SelectedItem.ToString()+"'";
+            var cursor = _selectedLayer.FeatureClass.Search(query, false);
+            IGeometry bag = new GeometryBag();
+            IGeometryCollection collection = (IGeometryCollection)bag;
+            var current = cursor.NextFeature();
+            while (current != null)
+            {
+                object missing = Type.Missing;
+                collection.AddGeometry(current.Shape, missing, missing);
+                current = cursor.NextFeature();
+            }
+            for(int i = 0; i < collection.GeometryCount; i++)
+            {
+                _mapControl.Extent=collection.Geometry[0].Envelope;            
+
+            }
+
+            
         }
     }
 }
