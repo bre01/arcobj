@@ -254,12 +254,13 @@ namespace EX3
 
                 IFeatureLayer layer = GetFeatureLayerByFeatureClassName(_workspace, name);
                 _mapControl3.AddLayer(layer);
+                
             }
             else
             {
-                var layer = GetRasterUsingNameFromWorkspace(_rasterWorkspace, name);
-                LoadRasterLayer(_mapControl3, layer);
-
+                var raster = GetRasterUsingNameFromWorkspace(_rasterWorkspace, name);
+                LoadRasterLayer(_mapControl3, raster);
+                
             }
         }
         private IFeatureLayer GetFeatureLayerByFeatureClassName(IWorkspace workspace, string featureClassName)

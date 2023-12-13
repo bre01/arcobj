@@ -47,6 +47,8 @@ namespace EX3
             // 将LoadLayerCommand添加到ToolbarControl1
             axToolbarControl1.AddItem(loadLayerCommand, -1, -1, false, 0, 
               esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new OpenQuery(axMapControl1), -1, -1, false, 0, 
+              esriCommandStyles.esriCommandStyleIconOnly);
         }
 
         private void axToolbarControl1_OnMouseDown(object sender, ESRI.ArcGIS.Controls.IToolbarControlEvents_OnMouseDownEvent e)
