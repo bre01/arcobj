@@ -146,13 +146,15 @@ namespace EX3
                     return;
                 }
             }
-            query.WhereClause = $"\"{_selectedField.Name}\" {oper} '{comboBox4.SelectedItem.ToString()}'";
-            var cursor =_selectedLayer.Search(query,false);
+
+            //query.WhereClause = "\""+_selectedField.Name+"\""+" " + oper + " " +"'"+comboBox4.SelectedItem.ToString()+"'";
+            query.WhereClause = _selectedField.Name+" " + oper + " " +"'"+comboBox4.SelectedItem.ToString()+"'";
+            MessageBox.Show(query.WhereClause);
+            var cursor =_selectedLayer.FeatureClass.Search(query,false);
             var currentFeature = cursor.NextFeature();
 
             while (currentFeature != null)
             {
-                MessageBox.Show("flash");
                 _mapControl.FlashShape(currentFeature.Shape);
             }
         }
