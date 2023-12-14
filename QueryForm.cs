@@ -22,10 +22,12 @@ namespace EX3
         IFields _fields;
         esriFieldType _selectedFieldType;
         IField _selectedField;
-        public QueryForm(IMapControlDefault mapControl)
+        AxMapControl _ax;
+        public QueryForm(IMapControlDefault mapControl,AxMapControl ax)
         {
             InitializeComponent();
             _mapControl = mapControl;
+            _ax = ax;
         }
 
         private void QueryForm_Load(object sender, EventArgs e)
@@ -191,19 +193,28 @@ namespace EX3
             IGeometry bag = new GeometryBag();
             IGeometryCollection collection = (IGeometryCollection)bag;
             var current = cursor.NextFeature();
-            while (current != null)
+            if(current != null)
             {
+
+
                 object missing = Type.Missing;
                 collection.AddGeometry(current.Shape, missing, missing);
-                current = cursor.NextFeature();
+                //_mapControl.Extent=collection.Geometry[0].Envelope;            
+                //_ax.ActiveView.Extent.CenterAt(collection.Geometry[0].Envelope.LowerLeft);
+                IPoint centerPoint = new ESRI.ArcGIS.Geometry.Point();
+    centerPoint.PutCoords(collection.Geometry[0].Envelope.XMin + (collection.Geometry[0].Envelope.Width / 2),
+                          collection.Geometry[0].Envelope.YMin + (collection.Geometry[0].Envelope.Height / 2));
+                _ax.CenterAt(centerPoint);
+                _ax.ActiveView.Refresh();
+
             }
             /*
             for(int i = 0; i < collection.GeometryCount; i++)
             {
 
             }*/
-            var newGeo= collection.Geometry[0]; 
-            _mapControl.Extent=collection.Geometry[0].Envelope;            
+            /*
+            */
             
         }
     }

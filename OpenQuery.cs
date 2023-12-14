@@ -140,7 +140,7 @@ namespace EX3
         {
             // TODO: Add OpenQuery.OnClick implementation
             var mapControl = HookTool.FromAxToMap(_axmapControl);
-            var log = new QueryForm(mapControl);
+            var log = new QueryForm(mapControl,_axmapControl);
             log.ShowDialog();
 
         }
