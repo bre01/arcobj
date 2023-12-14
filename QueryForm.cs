@@ -197,12 +197,13 @@ namespace EX3
                 collection.AddGeometry(current.Shape, missing, missing);
                 current = cursor.NextFeature();
             }
+            /*
             for(int i = 0; i < collection.GeometryCount; i++)
             {
-                _mapControl.Extent=collection.Geometry[0].Envelope;            
 
-            }
-
+            }*/
+            var newGeo= collection.Geometry[0]; 
+            _mapControl.Extent=collection.Geometry[0].Envelope;            
             
         }
     }

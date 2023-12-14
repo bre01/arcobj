@@ -49,6 +49,8 @@ namespace EX3
               esriCommandStyles.esriCommandStyleIconOnly);
             axToolbarControl1.AddItem(new OpenQuery(axMapControl1), -1, -1, false, 0, 
               esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new IdentifyTool(axMapControl1), -1, -1, false, 0, 
+              esriCommandStyles.esriCommandStyleIconOnly);
         }
 
         private void axToolbarControl1_OnMouseDown(object sender, ESRI.ArcGIS.Controls.IToolbarControlEvents_OnMouseDownEvent e)
