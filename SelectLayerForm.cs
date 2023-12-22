@@ -33,7 +33,7 @@ namespace EX3
         private void button1_Click(object sender, EventArgs e)
         {
             Layer = (IFeatureLayer)_ax.get_Layer(listBox1.SelectedIndex);
-            EditEnvSingleton.EditingLayer = layer as IFeatureLayer;
+            EditEnvSingleton.EditingLayer = Layer;
              this.DialogResult = DialogResult.OK;
              
             this.Close();

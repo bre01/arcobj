@@ -67,15 +67,15 @@ namespace EX3
         #endregion
 
         private IHookHelper m_hookHelper = null;
-        IWorkspaceEdit _edit;
-        EditEnvSingleton _singleTon;
-        public EditStopCommand(EditEnvSingleton singleton)
+        AxMapControl _ax;
+        public EditStopCommand(AxMapControl ax)
         {
+            _ax = ax;
             //
             // TODO: Define values for the public properties
             //
             base.m_category = ""; //localizable text
-            base.m_caption = "";  //localizable text 
+            base.m_caption = "Stop edit";  //localizable text 
             base.m_message = "This should work in ArcMap/MapControl/PageLayoutControl";  //localizable text
             base.m_toolTip = "";  //localizable text
             base.m_name = "";   //unique id, non-localizable (e.g. "MyCategory_MyCommand")
@@ -131,9 +131,15 @@ namespace EX3
         public override void OnClick()
         {
             // TODO: Add EditStopCommand.OnClick implementation
-            IWorkspaceEdit editSpan = EditEnvSingleton.EditSpan;
-            var edit = editSpan;
-            _edit.StopEditing(true);
+            using(var log =new ModificationForm())
+            {
+                log.ShowDialog();
+                EditEnvSingleton.EditSpan.StopEditOperation();
+                EditEnvSingleton.EditSpan.StopEditing(log.Save);
+                _ax.ActiveView.Refresh();
+            }
+            
+            
         }
 
         #endregion

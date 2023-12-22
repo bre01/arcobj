@@ -28,10 +28,7 @@ namespace EX3
                 MessageBox.Show("plase add a map with valid spatial reference");
                 this.Close();
             }
-            if (ws!=null)
-            {
-                _ws = ws;
-            }
+            _ws = ws;
             _axMapControl = ax;
             comboBox1.Items.Add("string");
             comboBox1.Items.Add("integer");
@@ -99,7 +96,7 @@ namespace EX3
             }
             else if (radioButton2.Checked)
             {
-                geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryLine;
+                geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPolyline;
             }
             else if (radioButton3.Checked)
             {
@@ -132,6 +129,7 @@ namespace EX3
 
         public void RefreshGridView()
         {
+            dataGridView1.Rows.Clear();
             for (int i=0;i< _featureClass.Fields.FieldCount; i++)
             {
                 DataGridViewRow row = (DataGridViewRow)dataGridView1.Rows[0].Clone();

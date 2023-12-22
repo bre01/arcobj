@@ -132,6 +132,12 @@
     <Compile Include="LoadLayerDlg.Designer.cs">
       <DependentUpon>LoadLayerDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="ModificationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModificationForm.Designer.cs">
+      <DependentUpon>ModificationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="OpenCommand.cs" />
     <Compile Include="OpenDocument.cs" />
     <Compile Include="OpenQuery.cs" />
@@ -166,6 +172,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LoadLayerDlg.resx">
       <DependentUpon>LoadLayerDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModificationForm.resx">
+      <DependentUpon>ModificationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

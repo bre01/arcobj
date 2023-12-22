@@ -84,7 +84,7 @@ namespace EX3
             // TODO: Define values for the public properties
             //
             base.m_category = ""; //localizable text
-            base.m_caption = "";  //localizable text 
+            base.m_caption = "StartEdit";  //localizable text 
             base.m_message = "This should work in ArcMap/MapControl/PageLayoutControl";  //localizable text
             base.m_toolTip = "";  //localizable text
             base.m_name = "";   //unique id, non-localizable (e.g. "MyCategory_MyCommand")

@@ -70,16 +70,10 @@ namespace EX3
         #endregion
 
         private IHookHelper m_hookHelper = null;
-        IWorkspaceEdit _edit;
-        IWorkspace _work;
-        IFeatureLayer _layer;
-        IFeatureClass _editingLayer;
-        AxMapControl _ax;
+         AxMapControl _ax;
         public EditTool(IWorkspaceEdit edit,IFeatureLayer layer,AxMapControl ax)
         {
-            _edit = edit;
             _ax = ax;
-            _layer = layer;
             //
             // TODO: Define values for the public properties
             //
@@ -139,25 +133,40 @@ namespace EX3
         public override void OnClick()
         {
             // TODO: Add EditTool.OnClick implementation
-            _editingLayer = _layer.FeatureClass;
             
         }
 
         public override void OnMouseDown(int Button, int Shift, int X, int Y)
         {
+            var editingLayer = EditEnvSingleton.EditingLayer;
             // TODO:  Add EditTool.OnMouseDown implementation
-            var feature = _editingLayer.CreateFeature();
-            int indexOfGeometry = _editingLayer.Fields.FindField("geometry");
-             
-            esriGeometryType type = _editingLayer.ShapeType;
+                EditEnvSingleton.EditSpan.StartEditOperation();
+                EditEnvSingleton.EditSpan.StartEditing(true);
+            var feature = editingLayer.FeatureClass.CreateFeature();
+            int indexOfGeometry = editingLayer.FeatureClass.Fields.FindField("geometry");
+            int indexOfName = editingLayer.FeatureClass.Fields.FindField("Name");
+            feature.set_Value(indexOfName, "testFeature");
+            esriGeometryType type = editingLayer.FeatureClass.ShapeType;
             if(type==esriGeometryType.esriGeometryPoint)
             {
                 IPoint newPt = _ax.ToMapPoint(X, Y);
                 feature.Shape = newPt;
                 feature.Store();
             }
+            else if(type==esriGeometryType.esriGeometryPolyline)
+            {
+                IPolyline line = (IPolyline) _ax.TrackLine();
+                feature.Shape = line;
+                feature.Store();
+            }
+
+            else if(type==esriGeometryType.esriGeometryPolygon)
+            {
+                IPolygon line = (IPolygon) _ax.TrackPolygon();
+                feature.Shape = line;
+                feature.Store();
+            }
             _ax.ActiveView.Refresh();
-            MessageBox.Show(_editingLayer.FeatureCount(new QueryFilter()).ToString());
 
         }
 

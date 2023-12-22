@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +34,7 @@ namespace EX3
             label2.Text = _folder;
 
 
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -52,6 +54,7 @@ namespace EX3
                 // ws = CreateShapeWorkspace=(_folder, textBox1.Text);
             }
             _ws = ws as IFeatureWorkspace;
+            MessageBox.Show(textBox1.Text + " database at " + _folder + " created");
         }
         public IWorkspace CreateGDBWorkspace(string folderPath, string dbName)
         {
@@ -80,6 +83,20 @@ namespace EX3
             return workspace
             */
             return null;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+            File.Delete(_folder+"/"+textBox1.Text+".mdb");
+            File.Delete(_folder+"/"+textBox1.Text+".ldb");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("plase close db being used before delete"+ex.Message);
+            }
         }
     }
 }
