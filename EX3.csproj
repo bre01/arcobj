@@ -100,6 +100,10 @@
       <DependentUpon>CreateFeatureForm.cs</DependentUpon>
     </Compile>
     <Compile Include="CreateGDBCommand.cs" />
+    <Compile Include="EditEnvSingleton.cs" />
+    <Compile Include="EditStartCommand.cs" />
+    <Compile Include="EditStopCommand.cs" />
+    <Compile Include="EditTool.cs" />
     <Compile Include="FeatureInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,6 +144,12 @@
       <DependentUpon>QueryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SaveAsDocument.cs" />
+    <Compile Include="SelectLayerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectLayerForm.Designer.cs">
+      <DependentUpon>SelectLayerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ZoomIn.cs" />
     <Compile Include="ZoomToLayer.cs" />
     <EmbeddedResource Include="CreateFeatureForm.resx">
@@ -193,6 +203,9 @@
     <EmbeddedResource Include="SaveAsDocument.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="SelectLayerForm.resx">
+      <DependentUpon>SelectLayerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ZoomIn.bmp" />
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +240,18 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CreateFeatureCommand.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditStartCommand.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditTool.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditTool.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditStopCommand.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

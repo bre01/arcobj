@@ -33,6 +33,11 @@ namespace EX3
                 _ws = ws;
             }
             _axMapControl = ax;
+            comboBox1.Items.Add("string");
+            comboBox1.Items.Add("integer");
+            comboBox1.Items.Add("doule");
+            comboBox1.Items.Add("date");
+            
         }
 
         private void label5_Click(object sender, EventArgs e)
@@ -153,11 +158,34 @@ namespace EX3
         private void button3_Click(object sender, EventArgs e)
         {
             //addFeature();
+            var field = new Field();
+            IFieldEdit fieldEdit = (IFieldEdit)field;
+
+
+            fieldEdit.Name_2 = textBox3.Text;
+            if (comboBox1.Text == "string")
+            {
+                fieldEdit.Type_2 = esriFieldType.esriFieldTypeString;
+            }
+            else if (comboBox1.Text =="double")
+            {
+                fieldEdit.Type_2 = esriFieldType.esriFieldTypeDouble;
+            }
+            else if (comboBox1.Text =="integer")
+            {
+                fieldEdit.Type_2 = esriFieldType.esriFieldTypeInteger;
+            }
+            else if (comboBox1.Text =="date")
+            {
+                fieldEdit.Type_2 = esriFieldType.esriFieldTypeDate;
+            }
+            fieldEdit.Length_2 = int.Parse(textBox5.Text);
+            _featureClass.AddField(fieldEdit);
+            RefreshGridView();               
 
 
 
 
-            
         }
     }
 }
