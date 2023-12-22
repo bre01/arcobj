@@ -21,25 +21,10 @@ namespace EX3
         IFeatureWorkspace _ws;
         public IFeatureLayer _editingLayer;
         IWorkspaceEdit _editSpan;
-        Flag _flag = new Flag();
-        public void SetEdit(IWorkspaceEdit edit, IFeatureLayer layer)
-        {
-            _editSpan = edit;
-            _editingLayer = layer;
-
-
-        }
-
         public Form1()
         {
             ESRI.ArcGIS.RuntimeManager.BindLicense(ESRI.ArcGIS.ProductCode.Desktop);
             InitializeComponent();
-
-
-        }
-        public class Flag
-        {
-            public bool able = false;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -77,15 +62,10 @@ namespace EX3
               esriCommandStyles.esriCommandStyleIconOnly);
             axToolbarControl1.AddItem(new EditStartCommand(axMapControl1, _editingLayer, _editSpan, this), -1, -1, false, 0,
               esriCommandStyles.esriCommandStyleIconOnly);
-
-            /*axToolbarControl1.AddItem(new EditStopCommand(axMapControl1,_ws as IFeatureWorkspace), -1, -1, false, 0, 
-              esriCommandStyles.esriCommandStyleIconOnly);*/
-
-        }
-        public void AddEdit()
-        {
-            axToolbarControl1.AddItem(new EditTool(_editSpan,  _editingLayer, axMapControl1), -1, -1, false, 0,
-          esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new EditTool(_editSpan, _editingLayer, axMapControl1), -1, -1, false, 0,
+                    esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new EditStopCommand(), -1, -1, false, 0, 
+              esriCommandStyles.esriCommandStyleIconOnly);
 
         }
 

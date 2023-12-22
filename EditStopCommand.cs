@@ -68,9 +68,9 @@ namespace EX3
 
         private IHookHelper m_hookHelper = null;
         IWorkspaceEdit _edit;
-        public EditStopCommand(IWorkspaceEdit edit)
+        EditEnvSingleton _singleTon;
+        public EditStopCommand(EditEnvSingleton singleton)
         {
-            _edit = edit;
             //
             // TODO: Define values for the public properties
             //
@@ -131,7 +131,8 @@ namespace EX3
         public override void OnClick()
         {
             // TODO: Add EditStopCommand.OnClick implementation
-            _edit.StopEditOperation();
+            IWorkspaceEdit editSpan = EditEnvSingleton.EditSpan;
+            var edit = editSpan;
             _edit.StopEditing(true);
         }
 

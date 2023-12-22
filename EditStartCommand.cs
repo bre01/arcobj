@@ -6,6 +6,7 @@ using ESRI.ArcGIS.Geodatabase;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using static EX3.Form1;
 
 namespace EX3
@@ -140,17 +141,13 @@ namespace EX3
         {
             // TODO: Add EditStartCommand.OnClick implementation
 
-
             using (var log = new SelectLayerForm(_ax))
             {
                 var result = log.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    _editingFeature = log.Layer;
-                    _parent._editingLayer = log.Layer;
-                    _parent.StartEdit();
-                    _parent.SetEdit(workspaceEdit, editingLayer);
-                    _parent.AddEdit();
+
+                    MessageBox.Show("begin editing layer:" + EditEnvSingleton.EditingLayer.Name);
                 }
             }
         }

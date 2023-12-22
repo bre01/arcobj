@@ -1,5 +1,6 @@
 ﻿using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Controls;
+using ESRI.ArcGIS.Geodatabase;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +17,8 @@ namespace EX3
     {
         public IFeatureLayer Layer {get;set;}
         public AxMapControl _ax;
+        public IWorkspaceEdit EditSpan;
+        public IFeatureLayer EditLayer;
         public SelectLayerForm(AxMapControl ax)
         {
             InitializeComponent();
@@ -30,7 +33,9 @@ namespace EX3
         private void button1_Click(object sender, EventArgs e)
         {
             Layer = (IFeatureLayer)_ax.get_Layer(listBox1.SelectedIndex);
+            EditEnvSingleton.EditingLayer = layer as IFeatureLayer;
              this.DialogResult = DialogResult.OK;
+             
             this.Close();
         }
     }
