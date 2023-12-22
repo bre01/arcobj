@@ -16,9 +16,11 @@ namespace EX3
     public partial class GDBForm : Form
     {
         string _folder;
-        public GDBForm()
+        IFeatureWorkspace _ws;
+        public GDBForm(IFeatureWorkspace ws)
         {
             InitializeComponent();
+            _ws = ws;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -35,20 +37,21 @@ namespace EX3
 
         private void button2_Click(object sender, EventArgs e)
         {
+            IWorkspace ws=null;
             if (radioButton1.Checked)
             {
-                CreateAcWorkspace(_folder, textBox1.Text);
+                ws=CreateAcWorkspace(_folder, textBox1.Text);
 
             }
             else if (radioButton2.Checked)
             {
-                CreateGDBWorkspace(_folder, textBox1.Text);
+                ws=CreateGDBWorkspace(_folder, textBox1.Text);
             }
             else if (radioButton3.Checked)
             {
-                CreateShapeWorkspace(_folder, textBox1.Text);
+                // ws = CreateShapeWorkspace=(_folder, textBox1.Text);
             }
-
+            _ws = ws as IFeatureWorkspace;
         }
         public IWorkspace CreateGDBWorkspace(string folderPath, string dbName)
         {

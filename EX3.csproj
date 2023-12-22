@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateFeatureCommand.cs" />
     <Compile Include="CreateFeatureForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -223,6 +224,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CreateGDBCommand.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CreateFeatureCommand.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,6 @@
-﻿using ESRI.ArcGIS.Geodatabase;
+﻿using ESRI.ArcGIS.Controls;
+using ESRI.ArcGIS.DataSourcesGDB;
+using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using System;
 using System.Collections.Generic;
@@ -16,9 +18,21 @@ namespace EX3
     {
         string _db;
         IFeatureWorkspace _ws;
-        public CreateFeatureForm()
+        AxMapControl _axMapControl;
+        IFeatureClass _featureClass;
+        public CreateFeatureForm(AxMapControl ax,IFeatureWorkspace ws=null)
         {
             InitializeComponent();
+            if(ax==null)
+            {
+                MessageBox.Show("plase add a map with valid spatial reference");
+                this.Close();
+            }
+            if (ws!=null)
+            {
+                _ws = ws;
+            }
+            _axMapControl = ax;
         }
 
         private void label5_Click(object sender, EventArgs e)
@@ -45,15 +59,15 @@ namespace EX3
         private void button2_Click(object sender, EventArgs e)
         {
 
-            var dbFullPath =;
-            _ws =;
 
-            var layerName =;
-            var validatedFields =;
+            var layerName =textBox2.Text;
+            IWorkspaceFactory workspaceFactory = new AccessWorkspaceFactoryClass();
 
-            var feature= _ws.CreateFeatureClass(layerName,validatedFields,ocDesc.InstanceCLSID,);
-            CreateFeatureClassWithSR(_ws,layerName,)
-
+            _ws = (IFeatureWorkspace)workspaceFactory.OpenFromFile(_db, 0);
+                
+            var spatialR = _axMapControl.SpatialReference;
+            CreateFeatureClassWithSR(layerName,_ws, spatialR);
+            RefreshGridView();
         }
         public IFeatureClass CreateFeatureClassWithSR(string featureClassName, IFeatureWorkspace featureWorkspace, ISpatialReference spatialReference)
         {
@@ -64,6 +78,7 @@ namespace EX3
             // 添加 Name 字段.
             IField field = new FieldClass();
             IFieldEdit fieldEdit = (IFieldEdit)field;
+            
             fieldEdit.Name_2 = "Name";
             fieldEdit.Type_2 = esriFieldType.esriFieldTypeString;
             fieldsEdit.AddField(field);
@@ -72,7 +87,20 @@ namespace EX3
             field = fields.Field[shapeFieldIndex]; //或 get_Field(idx)
             IGeometryDef geometryDef = field.GeometryDef;
             IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
-            geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
+            if (radioButton1.Checked)
+            {
+
+                geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
+            }
+            else if (radioButton2.Checked)
+            {
+                geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryLine;
+            }
+            else if (radioButton3.Checked)
+            {
+                geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPolygon; 
+            }
+
             geometryDefEdit.SpatialReference_2 = spatialReference;
             // In this example, only the required fields from the class description are used as fields
             // for the feature class. If additional fields are added, use IFieldChecker to
@@ -87,7 +115,49 @@ namespace EX3
             IFeatureClass featureClass = featureWorkspace.CreateFeatureClass(featureClassName,
             validatedFields, ocDescription.InstanceCLSID, ocDescription.ClassExtensionCLSID,
             esriFeatureType.esriFTSimple, fcDescription.ShapeFieldName, "");
+            _featureClass = featureClass;
             return featureClass;
+            
+        }
+
+
+
+
+
+
+        public void RefreshGridView()
+        {
+            for (int i=0;i< _featureClass.Fields.FieldCount; i++)
+            {
+                DataGridViewRow row = (DataGridViewRow)dataGridView1.Rows[0].Clone();
+                var field = _featureClass.Fields.get_Field(i);
+                row.Cells[0].Value = field.Name;
+                row.Cells[1].Value = field.Type;
+                row.Cells[2].Value = field.Length;
+                dataGridView1.Rows.Add(row);
+            }
+        }
+
+        private void CreateFeatureForm_Load(object sender, EventArgs e)
+        {
+            dataGridView1.ColumnCount = 4;
+            dataGridView1.RowHeadersWidth = 60;
+            dataGridView1.TopLeftHeaderCell.Value = "序号";
+            dataGridView1.Columns[0].HeaderText = "";
+            dataGridView1.Columns[1].HeaderText = "field name";
+            dataGridView1.Columns[2].HeaderText = "field type ";
+            dataGridView1.Columns[3].HeaderText = "field length";
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //addFeature();
+
+
+
+
+            
         }
     }
 }

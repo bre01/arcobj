@@ -1,6 +1,7 @@
 using ESRI.ArcGIS.ADF.BaseClasses;
 using ESRI.ArcGIS.ADF.CATIDs;
 using ESRI.ArcGIS.Controls;
+using ESRI.ArcGIS.Geodatabase;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -65,8 +66,9 @@ namespace EX3
         #endregion
         #endregion
 
+        IFeatureWorkspace _ws;
         private IHookHelper m_hookHelper = null;
-        public CreateGDBCommand()
+        public CreateGDBCommand(IFeatureWorkspace ws=null)
         {
             //
             // TODO: Define values for the public properties
@@ -89,6 +91,7 @@ namespace EX3
             {
                 System.Diagnostics.Trace.WriteLine(ex.Message, "Invalid Bitmap");
             }
+            _ws = ws;
         }
 
         #region Overridden Class Methods
@@ -128,7 +131,7 @@ namespace EX3
         public override void OnClick()
         {
             // TODO: Add CreateGDBCommand.OnClick implementation
-            var log = new GDBForm();
+            var log = new GDBForm(_ws);
             log.Show();
         }
 

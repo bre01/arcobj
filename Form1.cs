@@ -18,10 +18,13 @@ namespace EX3
 {
     public partial class Form1 : Form
     {
+        IFeatureWorkspace _ws;
+          
         public Form1()
         {
             ESRI.ArcGIS.RuntimeManager.BindLicense(ESRI.ArcGIS.ProductCode.Desktop);
             InitializeComponent();
+
 
         }
 
@@ -54,7 +57,9 @@ namespace EX3
 
             axToolbarControl1.AddItem(new IdentifyTool(axMapControl1), -1, -1, false, 0, 
               esriCommandStyles.esriCommandStyleIconOnly);
-            axToolbarControl1.AddItem(new CreateGDBCommand(), -1, -1, false, 0, 
+            axToolbarControl1.AddItem(new CreateGDBCommand(_ws as IFeatureWorkspace), -1, -1, false, 0, 
+              esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new CreateFeatureCommand(axMapControl1,_ws as IFeatureWorkspace), -1, -1, false, 0, 
               esriCommandStyles.esriCommandStyleIconOnly);
             
         }

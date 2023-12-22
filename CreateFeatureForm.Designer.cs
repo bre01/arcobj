@@ -221,6 +221,7 @@ namespace EX3
             this.button3.TabIndex = 18;
             this.button3.Text = "button3";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // dataGridView1
             // 
@@ -259,6 +260,7 @@ namespace EX3
             this.Controls.Add(this.button1);
             this.Name = "CreateFeatureForm";
             this.Text = "CreateFeatureForm";
+            this.Load += new System.EventHandler(this.CreateFeatureForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
