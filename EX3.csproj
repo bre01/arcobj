@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateGDBCommand.cs" />
     <Compile Include="FeatureInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,6 +106,12 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="FullExtent.cs" />
+    <Compile Include="GDBForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GDBForm.Designer.cs">
+      <DependentUpon>GDBForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="HookTool.cs" />
     <Compile Include="IdentifyTool.cs" />
     <Compile Include="LayerTool.cs" />
@@ -133,6 +140,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GDBForm.resx">
+      <DependentUpon>GDBForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoadLayerDlg.resx">
       <DependentUpon>LoadLayerDlg.cs</DependentUpon>
@@ -201,6 +211,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="IdentifyTool.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CreateGDBCommand.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
