@@ -61,11 +61,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Geometry, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
-<<<<<<< HEAD
       <EmbedInteropTypes>False</EmbedInteropTypes>
-=======
-      <EmbedInteropTypes>True</EmbedInteropTypes>
->>>>>>> main
     </Reference>
     <Reference Include="ESRI.ArcGIS.GlobeCore, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -96,9 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Compile Include="cmdLayerProperty.cs" />
-=======
     <Compile Include="CreateFeatureCommand.cs" />
     <Compile Include="CreateFeatureForm.cs">
       <SubType>Form</SubType>
@@ -111,7 +105,6 @@
     <Compile Include="EditStartCommand.cs" />
     <Compile Include="EditStopCommand.cs" />
     <Compile Include="EditTool.cs" />
->>>>>>> main
     <Compile Include="FeatureInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,7 +124,6 @@
       <DependentUpon>frmSymbolSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="FullExtent.cs" />
-
     <Compile Include="GDBForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -184,6 +176,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmSymbolSelector.resx">
       <DependentUpon>frmSymbolSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GDBForm.resx">
       <DependentUpon>GDBForm.cs</DependentUpon>
     </EmbeddedResource>
