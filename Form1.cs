@@ -71,7 +71,6 @@ namespace EX3
 
         private void axToolbarControl1_OnMouseDown(object sender, ESRI.ArcGIS.Controls.IToolbarControlEvents_OnMouseDownEvent e)
         {
-
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -81,7 +80,34 @@ namespace EX3
 
         private void Form1_Click(object sender, EventArgs e)
         {
+           
+        }
 
+        private void axTOCControl1_OnDoubleClick(object sender, ITOCControlEvents_OnDoubleClickEvent e)
+        {
+            esriTOCControlItem itemType = esriTOCControlItem.esriTOCControlItemNone;
+            IBasicMap basicMap = null;
+            ILayer layer=null;
+            object unk = null;
+            object data = null;
+            axTOCControl1.HitTest(e.x, e.y, ref itemType, ref basicMap,ref layer, ref unk, ref data);
+            if(e.button==1)
+            {
+                if(itemType==esriTOCControlItem.esriTOCControlItemLegendClass)
+                {
+                    //取得图例
+                    ILegendClass pLegendClass = ((ILegendGroup)unk).get_Class((int)data);
+                    //创建符号选择器SymbolSelector实例
+                    frmSymbolSelector SymbolSelectorFrm = new frmSymbolSelector(pLegendClass, layer);
+                    if(SymbolSelectorFrm.ShowDialog()==DialogResult.OK)
+                    {
+                        axMapControl1.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeography, null, null);
+                        pLegendClass.Symbol = SymbolSelectorFrm.pSymbol;
+                        axMapControl1.Refresh();
+                        axTOCControl1.Update();
+                    }
+                }
+            }
         }
     }
 }
