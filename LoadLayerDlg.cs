@@ -55,7 +55,7 @@ namespace EX3
 
                 string FilePath = openFileDialog.FileName;
 
-                _workspace = _workspaceFactory.OpenFromFile(FilePath, 0);
+                _workspace = _workspaceFactory.OpenFromFile(FilePath, this.Handle.ToInt32());
                 /*IEnumDataset pEnumDataset =
                 _workspace.get_Datasets(ESRI.ArcGIS.Geodatabase.esriDatasetType.esriDTAny);*/
 

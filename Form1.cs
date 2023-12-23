@@ -18,17 +18,19 @@ namespace EX3
 {
     public partial class Form1 : Form
     {
+        public IFeatureLayer _editingLayer;
+        IWorkspaceEdit _editSpan;
+        IFeatureWorkspace _newlyAddedWorkspace;
         public Form1()
         {
             ESRI.ArcGIS.RuntimeManager.BindLicense(ESRI.ArcGIS.ProductCode.Desktop);
             InitializeComponent();
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-          
-            axToolbarControl1.AddItem(new OpenDocument(axMapControl1),-1, -1, true, 0,
+
+            axToolbarControl1.AddItem(new OpenDocument(axMapControl1), -1, -1, true, 0,
             esriCommandStyles.esriCommandStyleIconOnly);
 
             FullExtent fullExtentTool = new FullExtent();
@@ -37,7 +39,7 @@ namespace EX3
 
             ZoomIn zoomInTool = new ZoomIn();
             zoomInTool.OnCreate(axMapControl1.Object); // 关联地图控件
-            axToolbarControl1.AddItem(zoomInTool, -1, -1, true, 0, 
+            axToolbarControl1.AddItem(zoomInTool, -1, -1, true, 0,
             esriCommandStyles.esriCommandStyleIconOnly);
 
             axToolbarControl1.AddItem(new SaveAsDocument(axMapControl1), -1, -1, true,
@@ -45,19 +47,30 @@ namespace EX3
 
             ICommand loadLayerCommand = new OpenCommand();
             // 将LoadLayerCommand添加到ToolbarControl1
-            axToolbarControl1.AddItem(loadLayerCommand, -1, -1, false, 0, 
+            axToolbarControl1.AddItem(loadLayerCommand, -1, -1, false, 0,
               esriCommandStyles.esriCommandStyleIconOnly);
-            axToolbarControl1.AddItem(new OpenQuery(axMapControl1), -1, -1, false, 0, 
+            axToolbarControl1.AddItem(new OpenQuery(axMapControl1), -1, -1, false, 0,
               esriCommandStyles.esriCommandStyleIconOnly);
-            axToolbarControl1.AddItem(new IdentifyTool(axMapControl1), -1, -1, false, 0, 
+            axToolbarControl1.AddItem(new IdentifyTool(axMapControl1), -1, -1, false, 0,
               esriCommandStyles.esriCommandStyleIconOnly);
-            axToolbarControl1.AddItem(new cmdLayerProperty(), -1, -1, false, 0,
+
+            axToolbarControl1.AddItem(new IdentifyTool(axMapControl1), -1, -1, false, 0,
               esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new CreateGDBCommand(_newlyAddedWorkspace), -1, -1, false, 0,
+              esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new CreateFeatureCommand(axMapControl1, _newlyAddedWorkspace), -1, -1, false, 0,
+              esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new EditStartCommand(axMapControl1, _editingLayer, _editSpan, this), -1, -1, false, 0,
+              esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new EditTool(_editSpan, _editingLayer, axMapControl1), -1, -1, false, 0,
+                    esriCommandStyles.esriCommandStyleIconOnly);
+            axToolbarControl1.AddItem(new EditStopCommand(axMapControl1), -1, -1, false, 0, 
+              esriCommandStyles.esriCommandStyleIconOnly);
+
         }
 
         private void axToolbarControl1_OnMouseDown(object sender, ESRI.ArcGIS.Controls.IToolbarControlEvents_OnMouseDownEvent e)
         {
-            
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)

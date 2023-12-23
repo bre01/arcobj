@@ -61,7 +61,11 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Geometry, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+<<<<<<< HEAD
       <EmbedInteropTypes>False</EmbedInteropTypes>
+=======
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+>>>>>>> main
     </Reference>
     <Reference Include="ESRI.ArcGIS.GlobeCore, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -92,7 +96,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Compile Include="cmdLayerProperty.cs" />
+=======
+    <Compile Include="CreateFeatureCommand.cs" />
+    <Compile Include="CreateFeatureForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateFeatureForm.Designer.cs">
+      <DependentUpon>CreateFeatureForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CreateGDBCommand.cs" />
+    <Compile Include="EditEnvSingleton.cs" />
+    <Compile Include="EditStartCommand.cs" />
+    <Compile Include="EditStopCommand.cs" />
+    <Compile Include="EditTool.cs" />
+>>>>>>> main
     <Compile Include="FeatureInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,6 +131,13 @@
       <DependentUpon>frmSymbolSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="FullExtent.cs" />
+
+    <Compile Include="GDBForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GDBForm.Designer.cs">
+      <DependentUpon>GDBForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="HookTool.cs" />
     <Compile Include="IdentifyTool.cs" />
     <Compile Include="LayerTool.cs" />
@@ -120,6 +146,12 @@
     </Compile>
     <Compile Include="LoadLayerDlg.Designer.cs">
       <DependentUpon>LoadLayerDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModificationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModificationForm.Designer.cs">
+      <DependentUpon>ModificationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="OpenCommand.cs" />
     <Compile Include="OpenDocument.cs" />
@@ -133,8 +165,17 @@
       <DependentUpon>QueryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SaveAsDocument.cs" />
+    <Compile Include="SelectLayerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectLayerForm.Designer.cs">
+      <DependentUpon>SelectLayerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ZoomIn.cs" />
     <Compile Include="ZoomToLayer.cs" />
+    <EmbeddedResource Include="CreateFeatureForm.resx">
+      <DependentUpon>CreateFeatureForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FeatureInfo.resx">
       <DependentUpon>FeatureInfo.cs</DependentUpon>
     </EmbeddedResource>
@@ -143,9 +184,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmSymbolSelector.resx">
       <DependentUpon>frmSymbolSelector.cs</DependentUpon>
+    <EmbeddedResource Include="GDBForm.resx">
+      <DependentUpon>GDBForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoadLayerDlg.resx">
       <DependentUpon>LoadLayerDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModificationForm.resx">
+      <DependentUpon>ModificationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -183,6 +229,9 @@
     <EmbeddedResource Include="SaveAsDocument.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="SelectLayerForm.resx">
+      <DependentUpon>SelectLayerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ZoomIn.bmp" />
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +263,22 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="cmdLayerProperty.bmp" />
+    <EmbeddedResource Include="CreateGDBCommand.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CreateFeatureCommand.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditStartCommand.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditTool.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditTool.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditStopCommand.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
