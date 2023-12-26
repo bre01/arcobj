@@ -132,7 +132,7 @@ namespace EX3
 
 
         /// <summary>
-        /// 右击打开选单
+        /// 右击打开菜单
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

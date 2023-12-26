@@ -129,15 +129,10 @@ namespace EX3
         public override void OnClick()
         {
             // TODO: Add CmdOpenLayerRender.OnClick implementation
-            ILayer layer = m_hookHelper.FocusMap.Layer[0];
-            //中间通过一系列的接口查询把ILayer转为ILegendClass
-            IFeatureLayer pFeatureLayer = layer as IFeatureLayer;
-            ILegendInfo lengendInfo = (ILegendInfo)pFeatureLayer;
-            ILegendGroup legendGroup = lengendInfo.get_LegendGroup(0);
-            ILegendClass pLegendClass = legendGroup.get_Class(0); //获取到LegendClass  
+
 
             //显示渲染方式选择窗口
-            frmLayerRender frmLayerRender1 = new frmLayerRender(layer,pLegendClass);
+            frmLayerRender frmLayerRender1 = new frmLayerRender(m_hookHelper);
             frmLayerRender1.Show();
         }
 

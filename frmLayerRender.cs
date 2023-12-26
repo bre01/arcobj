@@ -22,26 +22,40 @@ namespace EX3
     /// </summary>
     public partial class frmLayerRender : Form
     {
-        SimpleRendererClass m_sRen;
-        UniqueValueRendererClass m_UVRen;
+        ISimpleRenderer m_sRen;
+        IUniqueValueRenderer m_UVRen;
         ISymbol m_Symbols;
         Label m_Labels;
         ILayer layer;
         ILegendClass pLegendClass;
+        IHookHelper m_Hookhelper;
+        AxMapControl axMapControl1;
 
 
-        public frmLayerRender(ILayer layer, ILegendClass pLegendClass)
+        public frmLayerRender(IHookHelper hookHelper)
         {
             InitializeComponent();
-            this.layer = layer;
-            this.pLegendClass = pLegendClass;
+            this.m_Hookhelper = hookHelper;
+            layer = hookHelper.FocusMap.Layer[0];
+            //中间通过一系列的接口查询把ILayer转为ILegendClass
+            IFeatureLayer pFeatureLayer = layer as IFeatureLayer;
+            ILegendInfo lengendInfo = (ILegendInfo)pFeatureLayer;
+            ILegendGroup legendGroup = lengendInfo.get_LegendGroup(0);
+            pLegendClass = legendGroup.get_Class(0); //获取到LegendClass  
 
         }
 
         private void btnBmp_Click(object sender, EventArgs e)
         {
-            frmSymbolSelector symbolForm = new frmSymbolSelector(pLegendClass,layer);
-            symbolForm.ShowDialog();
+            //axMapControl1= Control.FromHandle(new IntPtr(this.m_Hookhelper.ActiveView.ScreenDisplay.hWnd)) as AxMapControl;
+            frmSymbolSelector symbolForm = new frmSymbolSelector(pLegendClass, layer);
+            //symbolForm.ShowDialog();
+            //if (symbolForm.ShowDialog() == DialogResult.OK)
+            //{
+            //    axMapControl1.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeography, null, null);
+            //    pLegendClass.Symbol = symbolForm.pSymbol;
+            //    axMapControl1.Refresh();
+            //}
 
             IStyleGalleryItem styleGalleryItem = null;
             //ISymbol symbol = m_sRen.Symbol;
@@ -64,7 +78,7 @@ namespace EX3
             ISymbol pSym = (ISymbol)styleGalleryItem.Item;
             IMarkerSymbol pMarkSym = (IMarkerSymbol)pSym;
 
-            Bitmap b = symbolForm.Sym2Bitmap(pSym,(int)pMarkSym.Size,(int)pMarkSym.Size);
+            Bitmap b = symbolForm.Sym2Bitmap(pSym, (int)pMarkSym.Size, (int)pMarkSym.Size);
             btnBmp.Image = (Image)b;
 
         }
@@ -77,7 +91,7 @@ namespace EX3
         /// <param name="e"></param>
         private void renderMethodList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            renderMethodTab.SelectedIndex= renderMethodList.SelectedIndex;
+            renderMethodTab.SelectedIndex = renderMethodList.SelectedIndex;
         }
 
 
@@ -92,30 +106,30 @@ namespace EX3
         }
 
 
-        private void UpdateListView(string sField)
-        {
-            ListViewItem item;
-            listView1.Items.Clear();
-            m_UVRen = CreateUVRen(sField);
-            int vCount = m_UVRen.ValueCount;
-            m_Symbols = new ISymbol[vCount - 1] { };
-            m_Labels = new string[vCount - 1] { };
-            IMarkerSymbol pSym;
-            imageList1.Images.Clear();
-            for (int i = 0; i < vCount; i++)
-            {
-                string sValue = m_UVRen.get_Value(i);
-                pSym = m_UVRen.get_Symbol(sValue) as IMarkerSymbol;
-                m_Symbols(i) = pSym as ISymbol;
-                m_Labels(i) = m_UVRen.get_Label(sValue);
-                Bitmap b = Sym2Bitmap((ISymbol)pSym, 50, 50);
-                imageList1.Images.Add(b);
-                item = new ListViewItem(sValue);
-                item.ImageIndex = i;
-                listView1.Items.Add(item);
-            }
+        //private void UpdateListView(string sField)
+        //{
+        //    ListViewItem item;
+        //    listView1.Items.Clear();
+        //    m_UVRen = CreateUVRen(sField);
+        //    int vCount = m_UVRen.ValueCount;
+        //    m_Symbols = new ISymbol[vCount - 1] { };
+        //    m_Labels = new string[vCount - 1] { };
+        //    IMarkerSymbol pSym;
+        //    imageList1.Images.Clear();
+        //    for (int i = 0; i < vCount; i++)
+        //    {
+        //        string sValue = m_UVRen.get_Value(i);
+        //        pSym = m_UVRen.get_Symbol(sValue) as IMarkerSymbol;
+        //        m_Symbols(i) = pSym as ISymbol;
+        //        m_Labels(i) = m_UVRen.get_Label(sValue);
+        //        Bitmap b = Sym2Bitmap((ISymbol)pSym, 50, 50);
+        //        imageList1.Images.Add(b);
+        //        item = new ListViewItem(sValue);
+        //        item.ImageIndex = i;
+        //        listView1.Items.Add(item);
+        //    }
 
-        }
+        //}
 
 
         /// <summary>
@@ -132,45 +146,44 @@ namespace EX3
             {
                 object myObject = pEnum.Current;
                 System.Math.Max(System.Threading.Interlocked.Increment(ref nnClasses), nnClasses - 1);
-                IColorRamp colorRamp = new RandomColorRampClass();
-
-                colorRamp.Size = nnClasses;
-                bool createRamp;
-                colorRamp.CreateRamp(createRamp);
-
-                IEnumColors enumColors = colorRamp.Colors;
-                enumColors.Reset();
-
-                ISimpleMarkerSymbol pSym;
-                IUniqueValueRenderer pUVRenderer = new UniqueValueRendererClass();
-                pUVRenderer.FieldCount = 1;
-                pUVRenderer.set_Field(0, sField);
-
-                System.Collections.IEnumerator pEnum2 = SortTable((IFeatureLayer)layer, sField);
-
-                string value;
-                object myObj;
-                while (pEnum2.MoveNext())
-                {
-                    pSym = new SimpleMarkerSymbolClass();
-                    pSym.Size = 8;
-                    pSym.Style = esriSimpleMarkerStyle.esriSMSCircle;
-                    pSym.Color = enumColors.Next();
-
-                    pSym.Outline = true;
-                    pSym.OutlineSize = 0.4;
-
-                    myObj = pEnum2.Current;
-                    value = myObj.ToString();
-
-                    pUVRenderer.AddValue(value, value, (ISymbol)pSym);
-                    return pUVRenderer;
-                }
             }
+            IColorRamp colorRamp = new RandomColorRampClass();
+
+            colorRamp.Size = nnClasses;
+            bool createRamp = true;
+            colorRamp.CreateRamp(out createRamp);
+
+            IEnumColors enumColors = colorRamp.Colors;
+            enumColors.Reset();
+
+            ISimpleMarkerSymbol pSym;
+            IUniqueValueRenderer pUVRenderer = new UniqueValueRendererClass();
+            pUVRenderer.FieldCount = 1;
+            pUVRenderer.set_Field(0, sField);
+
+            System.Collections.IEnumerator pEnum2 = SortTable((IFeatureLayer)layer, sField);
+
+            string value;
+            object myObj;
+            while (pEnum2.MoveNext())
+            {
+                pSym = new SimpleMarkerSymbolClass();
+                pSym.Size = 8;
+                pSym.Style = esriSimpleMarkerStyle.esriSMSCircle;
+                pSym.Color = enumColors.Next();
+
+                pSym.Outline = true;
+                pSym.OutlineSize = 0.4;
+
+                myObj = pEnum2.Current;
+                value = myObj.ToString();
+
+                pUVRenderer.AddValue(value, value, (ISymbol)pSym);
+            }
+            return pUVRenderer;
         }
 
-
-        private System.Collections.IEnumerator SortTable(IFeatureLayer pFeatureLayer,string sFieldName)
+        private System.Collections.IEnumerator SortTable(IFeatureLayer pFeatureLayer, string sFieldName)
         {
             ITableSort pTablesort = new TableSortClass();
 
@@ -180,11 +193,14 @@ namespace EX3
             pTablesort.Table = pFeatureLayer as ITable;
 
             pTablesort.Sort(null);
-            ICursor pCorsor = pTablesort.Rows;
+            ICursor pCursor = pTablesort.Rows;
             IDataStatistics pDataStatistics = new DataStatisticsClass();
             pDataStatistics.Field = sFieldName;
-            pDataStatistics.Cursor = OnParentCursorChanged();
+            pDataStatistics.Cursor = pCursor;
             return pDataStatistics.UniqueValues;
         }
     }
+
+
+
 }
