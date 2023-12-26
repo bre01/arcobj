@@ -86,7 +86,7 @@ namespace EX3
 
         }
 
-        private Bitmap Sym2Bitmap(ISymbol sym, int width, int height)
+        public Bitmap Sym2Bitmap(ISymbol sym, int width, int height)
         {
             Bitmap b = new Bitmap(width + 3, height + 3);
             IDisplayTransformation dispTrans = new DisplayTransformationClass();
@@ -143,6 +143,7 @@ namespace EX3
 
         private void btnOk_Click(object sender, EventArgs e)
         {
+            
             pSymbol = (ISymbol)pStyleGalleryItem.Item;
             pSymbolImage = ptbPreview.Image;
             this.Close();
@@ -162,7 +163,7 @@ namespace EX3
             pStyleGalleryItem = (IStyleGalleryItem)e.styleGalleryItem;
             Color color;
             IRgbColor rgbColor;
-            switch(axSymbologyControl.StyleClass)
+            switch (axSymbologyControl.StyleClass)
             {
                 case esriSymbologyStyleClass.esriStyleClassMarkerSymbols:
                     rgbColor = ((IMarkerSymbol)pStyleGalleryItem.Item).Color as IRgbColor;
@@ -183,7 +184,7 @@ namespace EX3
                     break;
             }
             PreviewImage();
-        
+
         }
 
         private void nudSize_ValueChanged(object sender, EventArgs e)
@@ -198,10 +199,10 @@ namespace EX3
         private void btnColor_Click(object sender, EventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
-            if(colorDialog.ShowDialog()==DialogResult.OK)
+            if (colorDialog.ShowDialog() == DialogResult.OK)
             {
                 btnColor.BackColor = colorDialog.Color;
-                switch(axSymbologyControl.StyleClass)
+                switch (axSymbologyControl.StyleClass)
                 {
                     case esriSymbologyStyleClass.esriStyleClassMarkerSymbols:
                         ((IMarkerSymbol)pStyleGalleryItem.Item).Color = ConvertColorToIColor(colorDialog.Color);
@@ -222,5 +223,37 @@ namespace EX3
             pColor.RGB = color.B * 65536 + color.G * 256 + color.R;
             return pColor;
         }
+
+
+        /// <summary>
+        /// 获取frmSymbolSelector窗体中被选中的IStyleGalleryItem
+        /// </summary>
+        /// <param name="styleClass"></param>
+        /// <param name="symbol"></param>
+        /// <returns></returns>
+        public IStyleGalleryItem GetItem(esriSymbologyStyleClass styleClass, ISymbol symbol)
+        {
+            IStyleGalleryItem m_styleGalleryItem;
+            m_styleGalleryItem = new ServerStyleGalleryItem();
+
+            m_styleGalleryItem.Item = symbol;
+            
+            //获取并设置样式类
+            axSymbologyControl.StyleClass = styleClass;
+            ISymbologyStyleClass symbologyStyleClass = axSymbologyControl.GetStyleClass(styleClass);
+
+            IMarkerSymbol pMarkSym;
+            pMarkSym = (IMarkerSymbol)symbol;
+            int dSize = (int)pMarkSym.Size;
+            Bitmap b = Sym2Bitmap((ISymbol)pMarkSym, dSize, dSize);
+            nudSize.Value = dSize;
+            btnColor.Image = (Image)b;
+            this.ShowDialog();
+            return m_styleGalleryItem;
+
+        }
     }
+
+
+
 }
