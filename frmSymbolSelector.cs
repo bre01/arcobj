@@ -252,6 +252,20 @@ namespace EX3
             return m_styleGalleryItem;
 
         }
+
+        //public IStyleGalleryItem GetItem()
+        //{
+        //    // Ensure that an item is selected
+        //    if (axSymbologyControl.GetStyleClass(axSymbologyControl.StyleClass).ItemSelected)
+        //    {
+        //        return (IStyleGalleryItem)axSymbologyControl.GetStyleClass(axSymbologyControl.StyleClass).GetSelectedItem();
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Please select a symbol before calling GetSelectedItem.", "No Symbol Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        return null;
+        //    }
+        //}
     }
 
 

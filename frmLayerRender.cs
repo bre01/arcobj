@@ -30,6 +30,7 @@ namespace EX3
         ILegendClass pLegendClass;
         IHookHelper m_Hookhelper;
         AxMapControl axMapControl1;
+        ILayerFields m_layerfields;
 
 
         public frmLayerRender(IHookHelper hookHelper)
@@ -42,20 +43,13 @@ namespace EX3
             ILegendInfo lengendInfo = (ILegendInfo)pFeatureLayer;
             ILegendGroup legendGroup = lengendInfo.get_LegendGroup(0);
             pLegendClass = legendGroup.get_Class(0); //获取到LegendClass  
+            axMapControl1 = Control.FromHandle(new IntPtr(this.m_Hookhelper.ActiveView.ScreenDisplay.hWnd)) as AxMapControl;
 
         }
 
         private void btnBmp_Click(object sender, EventArgs e)
         {
-            //axMapControl1= Control.FromHandle(new IntPtr(this.m_Hookhelper.ActiveView.ScreenDisplay.hWnd)) as AxMapControl;
             frmSymbolSelector symbolForm = new frmSymbolSelector(pLegendClass, layer);
-            //symbolForm.ShowDialog();
-            //if (symbolForm.ShowDialog() == DialogResult.OK)
-            //{
-            //    axMapControl1.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeography, null, null);
-            //    pLegendClass.Symbol = symbolForm.pSymbol;
-            //    axMapControl1.Refresh();
-            //}
 
             IStyleGalleryItem styleGalleryItem = null;
             //ISymbol symbol = m_sRen.Symbol;
@@ -92,6 +86,10 @@ namespace EX3
         private void renderMethodList_SelectedIndexChanged(object sender, EventArgs e)
         {
             renderMethodTab.SelectedIndex = renderMethodList.SelectedIndex;
+            if (renderMethodList.SelectedIndex==1)
+            {
+                setComboBoxValues();
+            }
         }
 
 
@@ -103,33 +101,37 @@ namespace EX3
         private void renderMethodTab_SelectedIndexChanged(object sender, EventArgs e)
         {
             renderMethodList.SelectedIndex = renderMethodTab.SelectedIndex;
+            if (renderMethodTab.SelectedIndex == 1)
+            {
+                setComboBoxValues();
+            }
         }
 
 
-        //private void UpdateListView(string sField)
-        //{
-        //    ListViewItem item;
-        //    listView1.Items.Clear();
-        //    m_UVRen = CreateUVRen(sField);
-        //    int vCount = m_UVRen.ValueCount;
-        //    m_Symbols = new ISymbol[vCount - 1] { };
-        //    m_Labels = new string[vCount - 1] { };
-        //    IMarkerSymbol pSym;
-        //    imageList1.Images.Clear();
-        //    for (int i = 0; i < vCount; i++)
-        //    {
-        //        string sValue = m_UVRen.get_Value(i);
-        //        pSym = m_UVRen.get_Symbol(sValue) as IMarkerSymbol;
-        //        m_Symbols(i) = pSym as ISymbol;
-        //        m_Labels(i) = m_UVRen.get_Label(sValue);
-        //        Bitmap b = Sym2Bitmap((ISymbol)pSym, 50, 50);
-        //        imageList1.Images.Add(b);
-        //        item = new ListViewItem(sValue);
-        //        item.ImageIndex = i;
-        //        listView1.Items.Add(item);
-        //    }
+        private void UpdateListView(string sField)
+        {
+            ListViewItem item;
+            listView1.Items.Clear();
+            m_UVRen = CreateUVRen(sField);
+            int vCount = m_UVRen.ValueCount;
+            m_Symbols = new ISymbol[vCount - 1] { };
+            m_Labels = new string[vCount - 1] { };
+            IMarkerSymbol pSym;
+            imageList1.Images.Clear();
+            for (int i = 0; i < vCount; i++)
+            {
+                string sValue = m_UVRen.get_Value(i);
+                pSym = m_UVRen.get_Symbol(sValue) as IMarkerSymbol;
+                m_Symbols(i) = pSym as ISymbol;
+                m_Labels(i) = m_UVRen.get_Label(sValue);
+                Bitmap b = Sym2Bitmap((ISymbol)pSym, 50, 50);
+                imageList1.Images.Add(b);
+                item = new ListViewItem(sValue);
+                item.ImageIndex = i;
+                listView1.Items.Add(item);
+            }
 
-        //}
+        }
 
 
         /// <summary>
@@ -199,8 +201,39 @@ namespace EX3
             pDataStatistics.Cursor = pCursor;
             return pDataStatistics.UniqueValues;
         }
-    }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateListView(comboBox1.SelectedItem.ToString());
+        }
 
 
+
+        /// <summary>
+        /// 设置显示在字段ComboBox中的值
+        /// </summary>
+        private void setComboBoxValues()
+        {
+            IField m_field;
+            int fieldType;
+
+            this.m_layerfields = layer as ILayerFields;
+            for (int i = 0; i < m_layerfields.FieldCount; i++)
+            {
+                m_field = m_layerfields.get_Field(i);
+                fieldType = (int)m_field.Type;
+                if (fieldType == 7|| fieldType == 6)//esriFieldType=7表示esriFieldTypeGeometry,6表示OID
+                {
+                    continue;//不显示shape、OID字段
+                }
+                    comboBox1.Items.Add(m_field.Name);
+            }
+            if (comboBox1.Items.Count > 0)//设置默认选择ObjectID
+            {
+                comboBox1.SelectedIndex = 0;
+            }
+        }
 
 }
+    }
+
