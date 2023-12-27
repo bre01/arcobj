@@ -24,8 +24,8 @@ namespace EX3
     {
         ISimpleRenderer m_sRen;
         IUniqueValueRenderer m_UVRen;
-        ISymbol m_Symbols;
-        Label m_Labels;
+        ISymbol[] m_Symbols;
+        string[] m_Labels;
         ILayer layer;
         ILegendClass pLegendClass;
         IHookHelper m_Hookhelper;
@@ -55,7 +55,7 @@ namespace EX3
                 m_sRen = geoFeatureLayer.Renderer as ISimpleRenderer;
             }
 
-
+            
         }
 
         private void btnBmp_Click(object sender, EventArgs e)
@@ -77,15 +77,8 @@ namespace EX3
                 }
 
                 m_sRen.Symbol = (ISymbol)styleGalleryItem.Item;
+                //styleGalleryItem中的符号设置为btnBmp的图片
 
-
-                //创建新渲染器
-
-                //m_sRen = new SimpleRendererClass();
-
-                ////从styleGalleryItem中设置符号
-                //ISymbol pSym = (ISymbol)styleGalleryItem.Item;
-                //IMarkerSymbol pMarkSym = (IMarkerSymbol)pSym;
 
                 Bitmap b = symbolForm.Sym2Bitmap(m_sRen.Symbol, 32, 32);
                 btnBmp.Image = (Image)b;
@@ -124,31 +117,38 @@ namespace EX3
         }
 
 
-        //private void UpdateListView(string sField)
-        //{
-        //    ListViewItem item;
-        //    listView1.Items.Clear();
-        //    m_UVRen = CreateUVRen(sField);
-        //    int vCount = m_UVRen.ValueCount;
-        //    m_Symbols = new ISymbol[vCount - 1] { };
-        //    m_Labels = new string[vCount - 1] { };
-        //    IMarkerSymbol pSym;
-        //    imageList1.Images.Clear();
-        //    for (int i = 0; i < vCount; i++)
-        //    {
-        //        string sValue = m_UVRen.get_Value(i);
-        //        pSym = m_UVRen.get_Symbol(sValue) as IMarkerSymbol;
-        //        m_Symbols(i) = pSym as ISymbol;
-        //        m_Labels(i) = m_UVRen.get_Label(sValue);
+        private void UpdateListView(string sField)
+        {
+            listView1.LargeImageList = imageList1;
+            ListViewItem item;
+            listView1.Items.Clear();
+            m_UVRen = CreateUVRen(sField);
+            int vCount = m_UVRen.ValueCount;
+            //m_Symbols = new ISymbol[vCount - 1];
+            //m_Labels = new string[vCount - 1];
 
-        //        Bitmap b = Sym2Bitmap((ISymbol)pSym, 50, 50);
-        //        imageList1.Images.Add(b);
-        //        item = new ListViewItem(sValue);
-        //        item.ImageIndex = i;
-        //        listView1.Items.Add(item);
-        //    }
+            m_Symbols = new ISymbol[vCount];
+            m_Labels = new string[vCount];
+            IMarkerSymbol pSym;
+            imageList1.Images.Clear();
 
-        //}
+            for (int i = 0; i < vCount; i++)
+            {
+                string sValue = m_UVRen.get_Value(i);
+                pSym = m_UVRen.get_Symbol(sValue) as IMarkerSymbol;
+                m_Symbols[i] = pSym as ISymbol;
+                m_Labels[i] = m_UVRen.get_Label(sValue);
+                Bitmap b = sym2Bitmap((ISymbol)pSym, 50, 50);
+                imageList1.Images.Add(b);
+
+                item = new ListViewItem(sValue);
+                item.SubItems.Add(m_Labels[i]);
+                item.ImageIndex = i;
+                listView1.Items.Add(item);
+
+            }
+
+        }
 
 
         /// <summary>
@@ -202,6 +202,13 @@ namespace EX3
             return pUVRenderer;
         }
 
+
+        /// <summary>
+        /// 对字段进行排序并取得唯一值
+        /// </summary>
+        /// <param name="pFeatureLayer"></param>
+        /// <param name="sFieldName"></param>
+        /// <returns></returns>
         private System.Collections.IEnumerator SortTable(IFeatureLayer pFeatureLayer, string sFieldName)
         {
             ITableSort pTablesort = new TableSortClass();
@@ -221,7 +228,7 @@ namespace EX3
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //UpdateListView(comboBox1.SelectedItem.ToString());
+            UpdateListView(comboBox1.SelectedItem.ToString());
         }
 
 
@@ -262,6 +269,13 @@ namespace EX3
             if (m_sRen != null) { 
                 pLegendClass.Symbol = m_sRen.Symbol; 
             }
+            if (renderMethodTab.SelectedTab == uniqueValueTabPage)
+            {
+                if (m_UVRen != null)
+                {
+                    geoFeatureLayer.Renderer = (IFeatureRenderer)m_UVRen;
+                }
+            }
             IActiveView activeView = m_Hookhelper.ActiveView;
             activeView.Refresh();
             this.Close();
@@ -293,8 +307,69 @@ namespace EX3
             {
                 pLegendClass.Symbol = m_sRen.Symbol;
             }
+            if (renderMethodTab.SelectedTab == uniqueValueTabPage)
+            {
+                if (m_UVRen != null)
+                {
+                    geoFeatureLayer.Renderer = (IFeatureRenderer)m_UVRen;
+                }
+            }
             IActiveView activeView = m_Hookhelper.ActiveView;
             activeView.Refresh();
+        }
+
+
+        private Bitmap sym2Bitmap(ISymbol sym, int width, int height)
+        {
+            Bitmap b = new Bitmap(width + 3, height + 3);
+            IDisplayTransformation dispTrans = new DisplayTransformationClass();
+            tagRECT r = new tagRECT();
+            r.left = 0;
+            r.top = 0;
+            r.bottom = b.Height;
+            r.right = b.Width;
+            dispTrans.set_DeviceFrame(r);
+            IEnvelope bounds = new EnvelopeClass();
+            bounds.PutCoords(0, 0, b.Width, b.Height);
+            dispTrans.Bounds = bounds;
+            IGeometry geom = makeGeometry(sym, bounds);
+            Graphics g = Graphics.FromImage(b);
+            IntPtr hDC = g.GetHdc();
+            sym.SetupDC(hDC.ToInt32(), dispTrans);
+            sym.Draw(geom);
+            sym.ResetDC();
+            g.ReleaseHdc(hDC);
+            return b;
+        }
+
+
+        private IGeometry makeGeometry(ISymbol sym, IEnvelope env)
+        {
+
+            if (sym is IMarkerSymbol)           //如果符号是点符号
+            {
+                return ((IArea)env).Centroid;   //返回范围中心点
+            }
+            else if (sym is ILineSymbol)        //如果符号为线符号
+            {
+                object missing = Type.Missing;  //创建一个表示缺失值的对象
+                IPointCollection pc = new PolylineClass() as IPointCollection;
+                pc.AddPoint(env.LowerLeft, missing, missing);
+                pc.AddPoint(env.UpperRight, missing, missing);
+                return (IGeometry)pc;           // 创建一个折线，包含范围的 LowerLeft 和 UpperRight 两个点
+            }
+            else if (sym is IFillSymbol)
+            {
+                ISegmentCollection sc = new PolygonClass();  //创建一个矩形（多边形），其边界由范围定义
+                sc.SetRectangle(env);
+                return (IGeometry)sc;
+            }
+            else
+            {
+                // todo: throw an exception
+                return null;
+            }
+
         }
     }
 }
