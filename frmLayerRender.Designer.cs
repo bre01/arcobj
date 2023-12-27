@@ -91,6 +91,7 @@ namespace EX3
             this.btnBmp.Name = "btnBmp";
             this.btnBmp.Size = new System.Drawing.Size(139, 139);
             this.btnBmp.TabIndex = 0;
+            this.btnBmp.Text = "选择符号";
             this.btnBmp.UseVisualStyleBackColor = true;
             this.btnBmp.Click += new System.EventHandler(this.btnBmp_Click);
             // 

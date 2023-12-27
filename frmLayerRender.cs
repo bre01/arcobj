@@ -46,7 +46,7 @@ namespace EX3
             pLegendClass = legendGroup.get_Class(0); //获取到LegendClass  
             axMapControl1 = Control.FromHandle(new IntPtr(this.m_Hookhelper.ActiveView.ScreenDisplay.hWnd)) as AxMapControl;
             geoFeatureLayer = layer as IGeoFeatureLayer;
-            if (geoFeatureLayer.Renderer is SimpleRenderer)
+            if ((geoFeatureLayer.Renderer is SimpleRenderer))
             {
                 m_sRen = geoFeatureLayer.Renderer as ISimpleRenderer;
             }
@@ -83,8 +83,9 @@ namespace EX3
                 //ISymbol pSym = (ISymbol)styleGalleryItem.Item;
                 //IMarkerSymbol pMarkSym = (IMarkerSymbol)pSym;
 
-                //Bitmap b = symbolForm.Sym2Bitmap(pSym, (int)pMarkSym.Size, (int)pMarkSym.Size);
-                //btnBmp.Image = (Image)b;
+                Bitmap b = symbolForm.Sym2Bitmap(m_sRen.Symbol, 32, 32);
+                btnBmp.Image = (Image)b;
+                btnBmp.Text = "";
             }
         }
 
