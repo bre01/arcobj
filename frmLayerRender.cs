@@ -60,15 +60,21 @@ namespace EX3
 
         private void btnBmp_Click(object sender, EventArgs e)
         {
+            if(pLegendClass is UniqueValueRendererClass)
+            {
+                m_sRen = new SimpleRendererClass();
+                m_sRen.Symbol = default;
+                
+            }
             frmSymbolSelector symbolForm = new frmSymbolSelector(pLegendClass, layer);
 
             IStyleGalleryItem styleGalleryItem = null;
             if (symbolForm.ShowDialog() == DialogResult.OK)
             {
-                m_sRen.Symbol = pLegendClass.Symbol;
+                //m_sRen.Symbol = pLegendClass.Symbol;
+
+
                 //从symbolForm中获取样式
-                //styleGalleryItem = symbolForm.GetItem(esriSymbologyStyleClass.esriStyleClassMarkerSymbols,
-                //    m_sRen.Symbol);
 
                 styleGalleryItem = symbolForm.GetItem();
                 if (styleGalleryItem == null)
@@ -129,22 +135,58 @@ namespace EX3
 
             m_Symbols = new ISymbol[vCount];
             m_Labels = new string[vCount];
-            IMarkerSymbol pSym;
+            
             imageList1.Images.Clear();
 
             for (int i = 0; i < vCount; i++)
             {
                 string sValue = m_UVRen.get_Value(i);
-                pSym = m_UVRen.get_Symbol(sValue) as IMarkerSymbol;
-                m_Symbols[i] = pSym as ISymbol;
-                m_Labels[i] = m_UVRen.get_Label(sValue);
-                Bitmap b = sym2Bitmap((ISymbol)pSym, 50, 50);
-                imageList1.Images.Add(b);
+                switch (((IFeatureLayer)layer).FeatureClass.ShapeType)
+                {
+                    case esriGeometryType.esriGeometryPoint:
+                        IMarkerSymbol pSym;
+                        pSym = m_UVRen.get_Symbol(sValue) as IMarkerSymbol;
+                        m_Symbols[i] = pSym as ISymbol;
+                        m_Labels[i] = m_UVRen.get_Label(sValue);
+                        Bitmap b = sym2Bitmap((ISymbol)pSym, 50, 50);
+                        imageList1.Images.Add(b);
 
-                item = new ListViewItem(sValue);
-                item.SubItems.Add(m_Labels[i]);
-                item.ImageIndex = i;
-                listView1.Items.Add(item);
+                        item = new ListViewItem(sValue);
+                        item.SubItems.Add(m_Labels[i]);
+                        item.ImageIndex = i;
+                        listView1.Items.Add(item);
+                        break;
+                    case esriGeometryType.esriGeometryPolyline:
+                        ILineSymbol pSym2;
+                        pSym2 = m_UVRen.get_Symbol(sValue) as ILineSymbol;
+                        m_Symbols[i] = pSym2 as ISymbol;
+                        m_Labels[i] = m_UVRen.get_Label(sValue);
+                        Bitmap b2 = sym2Bitmap((ISymbol)pSym2, 50, 50);
+                        imageList1.Images.Add(b2);
+
+                        item = new ListViewItem(sValue);
+                        item.SubItems.Add(m_Labels[i]);
+                        item.ImageIndex = i;
+                        listView1.Items.Add(item);
+                        break;
+                    case esriGeometryType.esriGeometryPolygon:
+                        ILineSymbol pSym3;
+                        pSym3 = m_UVRen.get_Symbol(sValue) as ILineSymbol;
+                        m_Symbols[i] = pSym3 as ISymbol;
+                        m_Labels[i] = m_UVRen.get_Label(sValue);
+                        Bitmap b3 = sym2Bitmap((ISymbol)pSym3, 50, 50);
+                        imageList1.Images.Add(b3);
+
+                        item = new ListViewItem(sValue);
+                        item.SubItems.Add(m_Labels[i]);
+                        item.ImageIndex = i;
+                        listView1.Items.Add(item);
+                        break;
+
+
+                }
+                
+
 
             }
 
@@ -167,40 +209,58 @@ namespace EX3
                 System.Math.Max(System.Threading.Interlocked.Increment(ref nnClasses), nnClasses - 1);
             }
             IColorRamp colorRamp = new RandomColorRampClass();
-
             colorRamp.Size = nnClasses;
             bool createRamp = true;
             colorRamp.CreateRamp(out createRamp);
-
             IEnumColors enumColors = colorRamp.Colors;
             enumColors.Reset();
-
-            ISimpleMarkerSymbol pSym;
+            ISymbol pSym;
             IUniqueValueRenderer pUVRenderer = new UniqueValueRendererClass();
             pUVRenderer.FieldCount = 1;
             pUVRenderer.set_Field(0, sField);
-
             System.Collections.IEnumerator pEnum2 = SortTable((IFeatureLayer)layer, sField);
-
             string value;
             object myObj;
             while (pEnum2.MoveNext())
             {
-                pSym = new SimpleMarkerSymbolClass();
-                pSym.Size = 8;
-                pSym.Style = esriSimpleMarkerStyle.esriSMSCircle;
-                pSym.Color = enumColors.Next();
-
-                pSym.Outline = true;
-                pSym.OutlineSize = 0.4;
-
                 myObj = pEnum2.Current;
                 value = myObj.ToString();
 
-                pUVRenderer.AddValue(value, value, (ISymbol)pSym);
+                // 根据要素类型选择合适的符号类别
+                switch (((IFeatureLayer)layer).FeatureClass.ShapeType)
+                {
+                    case esriGeometryType.esriGeometryPoint:
+                        pSym = new SimpleMarkerSymbolClass();
+                        ((ISimpleMarkerSymbol)pSym).Size = 8;
+                        ((ISimpleMarkerSymbol)pSym).Style = esriSimpleMarkerStyle.esriSMSCircle;
+                        ((ISimpleMarkerSymbol)pSym).Color = enumColors.Next();
+                        ((ISimpleMarkerSymbol)pSym).Outline = true;
+                        ((ISimpleMarkerSymbol)pSym).OutlineSize = 0.4;
+                        break;
+
+                    case esriGeometryType.esriGeometryPolyline:
+                        pSym = new SimpleLineSymbolClass();
+                        ((ISimpleLineSymbol)pSym).Width = 1;
+                        ((ISimpleLineSymbol)pSym).Color = enumColors.Next();
+                        break;
+
+                    case esriGeometryType.esriGeometryPolygon:
+                        pSym = new SimpleFillSymbolClass();
+                        ((ISimpleFillSymbol)pSym).Outline = new SimpleLineSymbolClass() { Width = 1, Color = enumColors.Next() };
+                        ((ISimpleFillSymbol)pSym).Color = enumColors.Next();
+                        break;
+
+
+                    default:
+                        pSym = new SimpleMarkerSymbolClass();
+                        break;
+                }
+
+                pUVRenderer.AddValue(value, value, pSym);
             }
             return pUVRenderer;
         }
+
 
 
         /// <summary>
