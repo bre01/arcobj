@@ -38,14 +38,18 @@ namespace EX3
         {
             InitializeComponent();
             this.m_Hookhelper = hookHelper;
-            layer = hookHelper.FocusMap.Layer[0];
-            //中间通过一系列的接口查询把ILayer转为ILegendClass
+            //找到当前操作的layer
+            IMapControl3 m_mapControl = (IMapControl3)hookHelper.Hook;
+            layer = (ILayer)m_mapControl.CustomProperty;
+            //通过一系列的接口把ILayer转为ILegendClass
             IFeatureLayer pFeatureLayer = layer as IFeatureLayer;
             ILegendInfo lengendInfo = (ILegendInfo)pFeatureLayer;
             ILegendGroup legendGroup = lengendInfo.get_LegendGroup(0);
             pLegendClass = legendGroup.get_Class(0); //获取到LegendClass  
+            //获取axmapcontrol
             axMapControl1 = Control.FromHandle(new IntPtr(this.m_Hookhelper.ActiveView.ScreenDisplay.hWnd)) as AxMapControl;
             geoFeatureLayer = layer as IGeoFeatureLayer;
+            //为m_sRen赋初值
             if ((geoFeatureLayer.Renderer is SimpleRenderer))
             {
                 m_sRen = geoFeatureLayer.Renderer as ISimpleRenderer;

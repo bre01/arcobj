@@ -51,7 +51,7 @@ namespace EX3
             // 
             this.axToolbarControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.axToolbarControl1.Location = new System.Drawing.Point(0, 0);
-            this.axToolbarControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.axToolbarControl1.Margin = new System.Windows.Forms.Padding(4);
             this.axToolbarControl1.Name = "axToolbarControl1";
             this.axToolbarControl1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axToolbarControl1.OcxState")));
             this.axToolbarControl1.Size = new System.Drawing.Size(1106, 28);
@@ -62,7 +62,7 @@ namespace EX3
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 28);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -82,7 +82,7 @@ namespace EX3
             // 
             this.axTOCControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.axTOCControl1.Location = new System.Drawing.Point(0, 0);
-            this.axTOCControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.axTOCControl1.Margin = new System.Windows.Forms.Padding(4);
             this.axTOCControl1.Name = "axTOCControl1";
             this.axTOCControl1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axTOCControl1.OcxState")));
             this.axTOCControl1.Size = new System.Drawing.Size(334, 602);
@@ -94,7 +94,7 @@ namespace EX3
             // 
             this.axLicenseControl1.Enabled = true;
             this.axLicenseControl1.Location = new System.Drawing.Point(12, 61);
-            this.axLicenseControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.axLicenseControl1.Margin = new System.Windows.Forms.Padding(4);
             this.axLicenseControl1.Name = "axLicenseControl1";
             this.axLicenseControl1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axLicenseControl1.OcxState")));
             this.axLicenseControl1.Size = new System.Drawing.Size(32, 32);
@@ -104,11 +104,12 @@ namespace EX3
             // 
             this.axMapControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.axMapControl1.Location = new System.Drawing.Point(0, 0);
-            this.axMapControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.axMapControl1.Margin = new System.Windows.Forms.Padding(4);
             this.axMapControl1.Name = "axMapControl1";
             this.axMapControl1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMapControl1.OcxState")));
             this.axMapControl1.Size = new System.Drawing.Size(766, 602);
             this.axMapControl1.TabIndex = 0;
+            this.axMapControl1.OnViewRefreshed += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnViewRefreshedEventHandler(this.axMapControl1_OnViewRefreshed);
             // 
             // openFileDialog1
             // 
@@ -121,7 +122,7 @@ namespace EX3
             this.ClientSize = new System.Drawing.Size(1106, 630);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.axToolbarControl1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);

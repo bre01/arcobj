@@ -157,5 +157,16 @@ namespace EX3
                 m_menuLayer.PopupMenu(e.x, e.y, axTOCControl1.hWnd);
             }
         }
+
+
+        /// <summary>
+        /// 当AxMapControl的ActiveView发生变化时同步刷新axTOCControl1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void axMapControl1_OnViewRefreshed(object sender, IMapControlEvents2_OnViewRefreshedEvent e)
+        {
+            axTOCControl1.Update();
+        }
     }
 }
