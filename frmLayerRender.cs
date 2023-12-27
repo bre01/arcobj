@@ -58,6 +58,12 @@ namespace EX3
             
         }
 
+
+        /// <summary>
+        /// “选择符号”按钮点击事件，用于调用frmSymbolSelector并将选择的Symbol应用于选定的图层
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnBmp_Click(object sender, EventArgs e)
         {
             if(pLegendClass is UniqueValueRendererClass)
@@ -83,9 +89,9 @@ namespace EX3
                 }
 
                 m_sRen.Symbol = (ISymbol)styleGalleryItem.Item;
-                //styleGalleryItem中的符号设置为btnBmp的图片
 
 
+                //styleGalleryItem中的符号设置为btnBmp的背景图片
                 Bitmap b = symbolForm.Sym2Bitmap(m_sRen.Symbol, 32, 32);
                 btnBmp.Image = (Image)b;
                 btnBmp.Text = "";
@@ -123,6 +129,11 @@ namespace EX3
         }
 
 
+
+        /// <summary>
+        /// 刷新“唯一值渲染”Tab的ListView
+        /// </summary>
+        /// <param name="sField"></param>
         private void UpdateListView(string sField)
         {
             listView1.LargeImageList = imageList1;
@@ -379,6 +390,13 @@ namespace EX3
         }
 
 
+        /// <summary>
+        /// 符号转图片
+        /// </summary>
+        /// <param name="sym"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
         private Bitmap sym2Bitmap(ISymbol sym, int width, int height)
         {
             Bitmap b = new Bitmap(width + 3, height + 3);
