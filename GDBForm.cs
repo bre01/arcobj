@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ESRI.ArcGIS.DataSourcesFile;
 
 namespace EX3
 {
@@ -75,14 +76,12 @@ namespace EX3
         }
         public IWorkspace CreateShapeWorkspace(string foldPath, string dbName)
         {
-            /*
+            ESRI.ArcGIS.RuntimeManager.Bind(ESRI.ArcGIS.ProductCode.Desktop);
             IWorkspaceFactory2 workspaceFactory = (IWorkspaceFactory2)new ShapefileWorkspaceFactoryClass();
             IWorkspaceName workspaceName = workspaceFactory.Create("c:\\gisdata\\", "YunnanSF", null, 0);
             IName Name = (IName)workspaceName;
             IWorkspace workspace = (IWorkspace)Name.Open();
-            return workspace
-            */
-            return null;
+            return workspace;
         }
 
         private void button3_Click(object sender, EventArgs e)

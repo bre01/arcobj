@@ -21,6 +21,10 @@ namespace EX3
         public IFeatureLayer _editingLayer;
         IWorkspaceEdit _editSpan;
         IFeatureWorkspace _newlyAddedWorkspace;
+        private IToolbarMenu m_menuLayer;
+        private IMapControl3 m_mapControl;
+
+
         public Form1()
         {
             ESRI.ArcGIS.RuntimeManager.BindLicense(ESRI.ArcGIS.ProductCode.Desktop);
@@ -64,8 +68,16 @@ namespace EX3
               esriCommandStyles.esriCommandStyleIconOnly);
             axToolbarControl1.AddItem(new EditTool(_editSpan, _editingLayer, axMapControl1), -1, -1, false, 0,
                     esriCommandStyles.esriCommandStyleIconOnly);
-            axToolbarControl1.AddItem(new EditStopCommand(axMapControl1), -1, -1, false, 0, 
+            axToolbarControl1.AddItem(new EditStopCommand(axMapControl1), -1, -1, false, 0,
               esriCommandStyles.esriCommandStyleIconOnly);
+
+            m_mapControl = (IMapControl3)axMapControl1.Object;
+            m_menuLayer = new ToolbarMenuClass();
+            m_menuLayer.AddItem(new RemoveLayer(), -1, 0, false, ESRI.ArcGIS.SystemUI.esriCommandStyles.esriCommandStyleTextOnly);
+            m_menuLayer.AddItem(new ZoomToLayer_New(), -1, 0, true, ESRI.ArcGIS.SystemUI.esriCommandStyles.esriCommandStyleTextOnly);
+            m_menuLayer.AddItem(new CmdOpenLayerRender(), -1, 0, true, ESRI.ArcGIS.SystemUI.esriCommandStyles.esriCommandStyleTextOnly);
+            m_menuLayer.AddItem(new ShowAttribute(), -1, 0, true, ESRI.ArcGIS.SystemUI.esriCommandStyles.esriCommandStyleTextOnly);
+            m_menuLayer.SetHook(m_mapControl);
 
         }
 
@@ -80,26 +92,34 @@ namespace EX3
 
         private void Form1_Click(object sender, EventArgs e)
         {
-           
+
         }
 
+        /// <summary>
+        /// 双击打开符号选择器
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void axTOCControl1_OnDoubleClick(object sender, ITOCControlEvents_OnDoubleClickEvent e)
         {
             esriTOCControlItem itemType = esriTOCControlItem.esriTOCControlItemNone;
             IBasicMap basicMap = null;
-            ILayer layer=null;
+            ILayer layer = null;
             object unk = null;
             object data = null;
-            axTOCControl1.HitTest(e.x, e.y, ref itemType, ref basicMap,ref layer, ref unk, ref data);
-            if(e.button==1)
+
+            //HitTest(鼠标点击的X坐标，鼠标点击的Y坐标，esriTOCControlItem枚举常量，绑定MapControl的IBasicMap接口
+            //被点击的图层，TOCControl的LegendGroup对象，LegendClass在LegendGroup中的Index)
+            axTOCControl1.HitTest(e.x, e.y, ref itemType, ref basicMap, ref layer, ref unk, ref data);
+            if (e.button == 1)
             {
-                if(itemType==esriTOCControlItem.esriTOCControlItemLegendClass)
+                if (itemType == esriTOCControlItem.esriTOCControlItemLegendClass)
                 {
                     //取得图例
                     ILegendClass pLegendClass = ((ILegendGroup)unk).get_Class((int)data);
                     //创建符号选择器SymbolSelector实例
                     frmSymbolSelector SymbolSelectorFrm = new frmSymbolSelector(pLegendClass, layer);
-                    if(SymbolSelectorFrm.ShowDialog()==DialogResult.OK)
+                    if (SymbolSelectorFrm.ShowDialog() == DialogResult.OK)
                     {
                         axMapControl1.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeography, null, null);
                         pLegendClass.Symbol = SymbolSelectorFrm.pSymbol;
@@ -108,6 +128,45 @@ namespace EX3
                     }
                 }
             }
+        }
+
+
+        /// <summary>
+        /// 右击打开菜单
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void axTOCControl1_OnMouseDown(object sender, ITOCControlEvents_OnMouseDownEvent e)
+        {
+            esriTOCControlItem item = esriTOCControlItem.esriTOCControlItemNone;
+            IBasicMap map = null;
+            object unk = null;
+            object data = null;
+            ILayer layer = null;
+            //右击图层名
+            if (e.button == 2)
+            {
+                //定义被选中的对象
+                axTOCControl1.HitTest(e.x, e.y, ref item, ref map, ref layer, ref unk, ref data);
+                //确保对象被选中
+                if (item == esriTOCControlItem.esriTOCControlItemMap)
+                    axTOCControl1.SelectItem(map, null);
+                else
+                    axTOCControl1.SelectItem(layer, null);
+                m_mapControl.CustomProperty = layer;
+                m_menuLayer.PopupMenu(e.x, e.y, axTOCControl1.hWnd);
+            }
+        }
+
+
+        /// <summary>
+        /// 当AxMapControl的ActiveView发生变化时同步刷新axTOCControl1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void axMapControl1_OnViewRefreshed(object sender, IMapControlEvents2_OnViewRefreshedEvent e)
+        {
+            axTOCControl1.Update();
         }
     }
 }
