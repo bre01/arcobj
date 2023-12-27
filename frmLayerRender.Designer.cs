@@ -152,6 +152,7 @@ namespace EX3
             this.okButton.TabIndex = 2;
             this.okButton.Text = "确定";
             this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
@@ -161,6 +162,7 @@ namespace EX3
             this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "取消";
             this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // applyButton
             // 
@@ -170,6 +172,7 @@ namespace EX3
             this.applyButton.TabIndex = 4;
             this.applyButton.Text = "应用";
             this.applyButton.UseVisualStyleBackColor = true;
+            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // imageList1
             // 
