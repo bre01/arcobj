@@ -1,5 +1,1 @@
-* text eol=crlf
 
-*.mdb binary
-*.ldb binary
-assets/ binary
